@@ -41,6 +41,8 @@
 // This sketch code is based on the RPLIDAR driver library provided by RoboPeak
 #include <RPLidar.h>
 
+//#include <Adafruit_TinyUSB.h> // for Serial
+
 // You need to create an driver instance 
 RPLidar lidar;
 
@@ -50,7 +52,12 @@ RPLidar lidar;
                         
 void setup() {
   // bind the RPLIDAR driver to the arduino hardware serial
-  lidar.begin(Serial);
+  
+  Serial.begin(115200);
+  while (!Serial) {}; 
+  Serial.print("testing...");
+
+  lidar.begin(Serial1);
   
   // set pin modes
   pinMode(RPLIDAR_MOTOR, OUTPUT);
@@ -64,6 +71,8 @@ void loop() {
     byte  quality  = lidar.getCurrentPoint().quality; //quality of the current measurement
     
     //perform data processing here... 
+
+    Serial.print(distance);
     
     
   } else {
@@ -74,7 +83,7 @@ void loop() {
     if (IS_OK(lidar.getDeviceInfo(info, 100))) {
        // detected...
        lidar.startScan();
-       
+        Serial.print("start motor");
        // start motor rotating at max allowed speed
        analogWrite(RPLIDAR_MOTOR, 255);
        delay(1000);
